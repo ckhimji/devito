@@ -1,10 +1,6 @@
 name: asv-benchmarks
 
-on:
-  # Trigger the workflow on push to the master branch
-  push:
-    branches:
-      - master
+on: push
 
 jobs:
   benchmarks:
@@ -39,7 +35,7 @@ jobs:
 
     - name: Setup asv
       run: |
-        bash benchmarks/regression/merge_history.sh
+        sudo bash benchmarks/regression/merge_history.sh
         cp merge_history.txt benchmarks/regression/
         asv machine --config benchmarks/regression/asv.conf.json --yes
 
