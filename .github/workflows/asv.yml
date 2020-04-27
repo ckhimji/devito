@@ -55,4 +55,3 @@ jobs:
         EXTERNAL_REPOSITORY: devitocodes/devito-performance
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./benchmarks/regression/.asv/html
-        user_name: github-actions[bot]
