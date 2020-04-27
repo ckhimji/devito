@@ -35,7 +35,7 @@ jobs:
 
     - name: Setup asv
       run: |
-        sudo bash benchmarks/regression/merge_history.sh
+        bash benchmarks/regression/merge_history.sh
         cp merge_history.txt benchmarks/regression/
         asv machine --config benchmarks/regression/asv.conf.json --yes
 
