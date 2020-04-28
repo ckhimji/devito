@@ -45,7 +45,7 @@ def test_viscoelastic():
 if __name__ == "__main__":
     description = ("Example script for a set of viscoelastic operators.")
     parser = ArgumentParser(description=description)
-    parser.add_argument("-d", "--shape", default=(153, 153, 153), type=int, nargs="+",
+    parser.add_argument("-d", "--shape", default=(150, 150, 150), type=int, nargs="+",
                         help="Determine the grid size, defaults in (153, 153, 153)")
     parser.add_argument("-so", "--space_order", default=4,
                         type=int, help="Space order of the simulation")

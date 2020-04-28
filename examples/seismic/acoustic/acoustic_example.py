@@ -66,7 +66,7 @@ def run(shape=(50, 50, 50), spacing=(20.0, 20.0, 20.0), tn=1000.0,
 if __name__ == "__main__":
     description = ("Example script for a set of acoustic operators.")
     parser = ArgumentParser(description=description)
-    parser.add_argument("-d", "--shape", default=(153, 153, 153), type=int, nargs="+",
+    parser.add_argument("-d", "--shape", default=(51, 51, 51), type=int, nargs="+",
                         help="Determine the grid size")
     parser.add_argument('-f', '--full', default=False, action='store_true',
                         help="Execute all operators and store forward wavefield")
