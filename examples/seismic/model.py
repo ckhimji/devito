@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 from sympy import sin, Abs
 
 
@@ -390,12 +391,17 @@ class ModelElasticVTI(GenericModel):
         self.rho = self._gen_phys_param(rho, 'rho', space_order, is_param=True)
 
         # Additional parameter fields for VTI operators
-        self.epsilon = self._gen_phys_param(epsilon, 'epsilon', space_order, is_param=True)
-        self.scale = 1 if epsilon is None else np.sqrt(1 + 2 * np.max(epsilon))
+        #self.epsilon = self._gen_phys_param(epsilon, 'epsilon', space_order, is_param=True)
+        #self.scale = 1 if epsilon is None else np.sqrt(1 + 2 * np.max(epsilon))
+        #self.delta = self._gen_phys_param(delta, 'delta', space_order, is_param=True)
+        #self.gamma = self._gen_phys_param(gamma, 'gamma', space_order, is_param=True)
 
-        self.delta = self._gen_phys_param(delta, 'delta', space_order, is_param=True)
-        self.gamma = self._gen_phys_param(gamma, 'gamma', space_order, is_param=True)
-        
+        self.c11 = self._gen_phys_param(rho*(1+2*epsilon)*vp**2, 'c11', space_order, is_param=True)
+        self.c33 = self._gen_phys_param(rho*vp**2, 'c33', space_order, is_param=True)
+        self.c44 = self._gen_phys_param(rho*vs**2, 'c44', space_order, is_param=True)
+        self.c66 = self._gen_phys_param(rho*(1+2*gamma)*vs**2, 'c66', space_order, is_param=True)
+        self.f = self._gen_phys_param(1 - vs**2/vp**2, 'f', space_order, is_param=True)
+        self.c13 = self._gen_phys_param(rho*vp**2*sp.sqrt(self.f*(self.f+2*delta))-rho*vs**2, 'c13', space_order, is_param=True)
 
 
     @property
