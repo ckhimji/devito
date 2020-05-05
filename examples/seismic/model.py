@@ -389,6 +389,7 @@ class ModelElasticVTI(GenericModel):
         self.maxvp = np.max(vp)
 
         self.rho = self._gen_phys_param(rho, 'rho', space_order, is_param=True)
+        self.irho = self._gen_phys_param(1./rho, 'irho', space_order, is_param=True)
 
         # Additional parameter fields for VTI operators
         #self.epsilon = self._gen_phys_param(epsilon, 'epsilon', space_order, is_param=True)
@@ -400,8 +401,8 @@ class ModelElasticVTI(GenericModel):
         self.c33 = self._gen_phys_param(rho*vp**2, 'c33', space_order, is_param=True)
         self.c44 = self._gen_phys_param(rho*vs**2, 'c44', space_order, is_param=True)
         self.c66 = self._gen_phys_param(rho*(1+2*gamma)*vs**2, 'c66', space_order, is_param=True)
-        self.f = self._gen_phys_param(1 - vs**2/vp**2, 'f', space_order, is_param=True)
-        self.c13 = self._gen_phys_param(rho*vp**2*sp.sqrt(self.f*(self.f+2*delta))-rho*vs**2, 'c13', space_order, is_param=True)
+        #self.f = self._gen_phys_param(1 - vs**2/vp**2, 'f', space_order, is_param=True)
+        self.c13 = self._gen_phys_param(rho*vp**2*sp.sqrt((1 - vs**2/vp**2)*((1 - vs**2/vp**2)+2*delta))-rho*vs**2, 'c13', space_order, is_param=True)
 
 
     @property
