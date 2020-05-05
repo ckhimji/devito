@@ -7,7 +7,7 @@ from devito import (Grid, SubDomain, Function, Constant,
 from devito.builtins import initialize_function, gaussian_smooth, mmax
 from devito.tools import as_tuple
 
-__all__ = ['Model', 'ModelElastic', 'ModelViscoelastic', 'ModelViscoacoustic']
+__all__ = ['Model', 'ModelElastic', 'ModelElasticVTI', 'ModelViscoelastic', 'ModelViscoacoustic']
 
 
 def initialize_damp(damp, nbl, spacing, mask=False):
@@ -342,6 +342,73 @@ class ModelElastic(GenericModel):
         dt = .85*np.min(self.spacing) / (np.sqrt(3.)*self.maxvp)
         return self.dtype("%.3e" % dt)
 
+class ModelElasticVTI(GenericModel):
+    """
+    The physical model used in seismic inversion processes.
+
+    Parameters
+    ----------
+    origin : tuple of floats
+        Origin of the model in m as a tuple in (x,y,z) order.
+    spacing : tuple of floats, optional
+        Grid size in m as a Tuple in (x,y,z) order.
+    shape : tuple of int
+        Number of grid points size in (x,y,z) order.
+    space_order : int
+        Order of the spatial stencil discretisation.
+    vp : float or array
+        P-wave velocity in km/s.
+    vs : float or array
+        S-wave velocity in km/s.
+    nbl : int, optional
+        The number of absorbing layers for boundary damping.
+    rho : float or array, optional
+        Density in kg/cm^3 (rho=1 for water).
+    epsilon : array_like or float, optional
+        Thomsen epsilon parameter (0<epsilon<1).
+    delta : array_like or float
+        Thomsen delta parameter (0<delta<1), delta<epsilon.
+    gamma : array_like or float
+        Thomsen delta parameter (0<delta<1), delta<epsilon.   
+    theta : array_like or float
+        Tilt angle in radian.
+
+    The `ModelElastic` provides a symbolic data objects for the
+    creation of seismic wave propagation operators:
+
+    damp : Function, optional
+        The damping field for absorbing boundary condition.
+    """
+    def __init__(self, origin, spacing, shape, space_order, vp, vs, rho, epsilon, delta, gamma, nbl=20,
+                 subdomains=(), dtype=np.float32):
+        super(ModelElasticVTI, self).__init__(origin, spacing, shape, space_order,
+                                           nbl=nbl, subdomains=subdomains, dtype=dtype,
+                                           damp_mask=True)
+
+        self.maxvp = np.max(vp)
+
+        self.rho = self._gen_phys_param(rho, 'rho', space_order, is_param=True)
+
+        # Additional parameter fields for VTI operators
+        self.epsilon = self._gen_phys_param(epsilon, 'epsilon', space_order, is_param=True)
+        self.scale = 1 if epsilon is None else np.sqrt(1 + 2 * np.max(epsilon))
+
+        self.delta = self._gen_phys_param(delta, 'delta', space_order, is_param=True)
+        self.gamma = self._gen_phys_param(gamma, 'gamma', space_order, is_param=True)
+        
+
+
+    @property
+    def critical_dt(self):
+        """
+        Critical computational time step value from the CFL condition.
+        """
+        # For a fixed time order this number decreases as the space order increases.
+        #
+        # The CFL condtion is then given by
+        # dt < h / (sqrt(ndim) * max(vp)))
+        dt = .85*np.min(self.spacing) / (np.sqrt(3.)*self.maxvp)
+        return self.dtype("%.3e" % dt)
 
 class ModelViscoelastic(ModelElastic):
     """
