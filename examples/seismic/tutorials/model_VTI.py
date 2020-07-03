@@ -49,9 +49,9 @@ class ModelElasticVTI(GenericModel):
         The damping field for absorbing boundary condition.
     """
     def __init__(self, origin, spacing, shape, space_order, vp, vs, rho, epsilon, delta, gamma, theta=None, phi=None,
-                 nbl=20, dtype=np.float32, subdomains=(), damp_mask=False, **kwargs):
-        super(ModelElasticVTI, self).__init__(origin, spacing, shape, space_order,
-                                           nbl, dtype, subdomains, damp_mask = damp_mask)
+                 nbl=20, fs = False, dtype=np.float32, subdomains=(), bcs="mask", grid=None, **kwargs):
+        super(ModelElasticVTI, self).__init__(origin, spacing, shape, space_order, nbl,
+                                                dtype, subdomains, grid=grid, bcs=bcs, fs=fs)
         
         self.maxvp = np.max(vp)
         # Create square slowness of the wave as symbol `m`
