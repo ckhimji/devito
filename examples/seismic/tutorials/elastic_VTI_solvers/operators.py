@@ -84,7 +84,7 @@ def ForwardOperator(model, geometry, space_order=4, time_order = 1, save=False, 
     stencil = [u_vx, u_vy, u_vz, u_txx, u_tyy, u_tzz, u_txz, u_tyz, u_txy]
     srcrec = src_rec(v, tau, model, geometry)
     pde = stencil + srcrec
-    op = Operator(stencil, subs=model.spacing_map, name="ForwardElasticVTI")
+    op = Operator(pde, subs=model.spacing_map, name="ForwardElasticVTI")
 
     # Substitute spacing terms to reduce flops
     return op

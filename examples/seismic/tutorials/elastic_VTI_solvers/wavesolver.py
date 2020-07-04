@@ -2,7 +2,7 @@ from devito.tools import memoized_meth
 from devito import VectorTimeFunction, TensorTimeFunction
 
 from examples.seismic import Receiver
-from elastic_VTI_solvers import ForwardOperator
+from operators import ForwardOperator
 
 
 class ElasticVTIWaveSolver(object):
